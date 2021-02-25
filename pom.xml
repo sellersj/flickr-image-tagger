@@ -1,0 +1,96 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.github.sellersj</groupId>
+  <artifactId>flickr-image-tagger</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>software.amazon.awssdk</groupId>
+        <artifactId>bom</artifactId>
+        <version>2.15.19</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>rekognition</artifactId>
+    </dependency>
+
+
+    <!-- for doing face recognition locally -->
+    <!-- this allows a total java impl, but is missing extra modules and is behind on the versions -->
+    <!-- https://github.com/openpnp/opencv/issues/57 -->
+    <!-- <dependency> -->
+    <!-- <groupId>org.openpnp</groupId> -->
+    <!-- <artifactId>opencv</artifactId> -->
+    <!-- <version>4.3.0-3</version> -->
+    <!-- </dependency> -->
+    <!-- this requires a native install like with `brew install opencv` -->
+    <!-- <dependency> -->
+    <!-- <groupId>org.bytedeco</groupId> -->
+    <!-- <artifactId>opencv</artifactId> -->
+    <!-- <version>4.4.0-1.5.4</version> -->
+    <!-- </dependency> -->
+
+    <dependency>
+      <groupId>org.bytedeco</groupId>
+      <artifactId>javacv-platform</artifactId>
+      <version>1.5.4</version>
+    </dependency>
+
+    <!-- trying this out from https://github.com/tzolov/mtcnn-java/ -->
+    <dependency>
+      <groupId>net.tzolov.cv</groupId>
+      <artifactId>mtcnn</artifactId>
+      <version>0.0.4</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.7.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.7.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>bintray-big-data-maven</id>
+      <name>bintray</name>
+      <url>https://dl.bintray.com/big-data/maven</url>
+    </repository>
+  </repositories>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+
