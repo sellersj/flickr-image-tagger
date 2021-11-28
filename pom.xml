@@ -78,7 +78,7 @@
       </snapshots>
       <id>bintray-big-data-maven</id>
       <name>bintray</name>
-      <url>https://dl.bintray.com/big-data/maven</url>
+      <url>https://jcenter.bintray.com/</url>
     </repository>
   </repositories>
 
