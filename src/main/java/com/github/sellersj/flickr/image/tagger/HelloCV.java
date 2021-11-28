@@ -152,6 +152,15 @@ public class HelloCV {
         } else {
             System.out.println("No faces detected on " + filename);
         }
+
+        // release it to stop a memory leak
+        loadedImage.release();
+
+        // total hack to see if this helps with the memory leaking
+        // the system does not seem to "see" the memory that the C part of the program has taken so
+        // if we don't use this it will leak gigs and gigs of RAM before it crashes. Having this
+        // year will clear up the memory and the program will run at a stable amount of ram.
+        System.gc();
     }
 
     public Mat createTrainingImage(File toTrain) {
