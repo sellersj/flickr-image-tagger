@@ -22,6 +22,12 @@ import org.opencv.objdetect.Objdetect;
 
 public class HelloCV {
 
+    /**
+     * Checks the system variable if we should retrain the model, otherwise it will load what is
+     * has.
+     */
+    private static Boolean RETRAIN = Boolean.getBoolean("retrain");
+
     static {
         Loader.load(opencv_java.class);
     }
@@ -30,6 +36,26 @@ public class HelloCV {
     // private final FisherFaceRecognizer faceRecognizer = FisherFaceRecognizer.create();
 
     public void train() {
+        // TODO make a decision here about retraining vs loading the data
+        if (RETRAIN)
+            retrain();
+        else {
+            loadExistingModel();
+        }
+    }
+
+    public void loadExistingModel() {
+        long t1 = System.currentTimeMillis();
+
+        String cachedModel = System.getProperty("user.home") + "/Downloads/flickr-existing-training.yaml";
+        System.out.println("Loading the already trained model from " + cachedModel);
+        faceRecognizer.read(cachedModel);
+
+        long t2 = System.currentTimeMillis();
+        System.out.println("Done loading existing model. It took " + (t2 - t1) + " milliseconds");
+    }
+
+    public void retrain() {
         long t1 = System.currentTimeMillis();
 
         TrainingUtil trainingUtil = new TrainingUtil();
@@ -65,12 +91,19 @@ public class HelloCV {
                     counter++;
                 }
             }
+            // triggering the gc so we don't use tons of memory
+            System.gc();
         }
 
         MatOfInt labels1 = new MatOfInt();
         labels1.fromArray(labels);
         // FaceRecognizer faceRecognizer = EigenFaceRecognizer.create();
         faceRecognizer.train(list, labels1);
+
+        // write the retraining file to the
+        String target = "target/retraining.yaml";
+        System.out.println("Writing the retraing data to " + target);
+        faceRecognizer.write(target);
 
         long t2 = System.currentTimeMillis();
         System.out.println("Done training. It took " + (t2 - t1) + " milliseconds");
