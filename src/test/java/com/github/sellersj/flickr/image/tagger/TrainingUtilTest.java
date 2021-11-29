@@ -22,11 +22,15 @@ public class TrainingUtilTest {
 
         HashSet<Long> idsWeHaveSeen = new HashSet<>();
         TreeSet<Long> dupIds = new TreeSet<>();
+        TreeSet<String> tagsWeHaveSeen = new TreeSet<>();
 
         for (FlickrTrainingEntry entry : enteries) {
             assertNotNull(entry.getTagName(), "tag name shouldn't be null for " + entry);
             assertFalse(entry.getTagName().isEmpty(), "tag name shouldn't be null for " + entry);
             assertFalse(entry.getPhotoIds().isEmpty(), "photo id's shouldn't be empty for " + entry);
+
+            assertFalse(tagsWeHaveSeen.contains(entry.getTagName()), "duplicate tag name: " + entry.getTagName());
+            tagsWeHaveSeen.add(entry.getTagName());
 
             assertFalse(entry.getCachedPhotoPath().isEmpty(), "photo file paths shouldn't be empty for " + entry);
             // TODO check if the file paths actually exist
