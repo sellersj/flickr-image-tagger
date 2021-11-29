@@ -122,6 +122,12 @@ public class HelloCV {
         // save the image
         Rect[] facesArray = facesDetected.toArray();
         if (0 != facesArray.length) {
+
+            // try to identify the photos with only 1 found face
+            if (1 == facesArray.length) {
+                System.out.println("Only 1 face found for " + targetImagePath);
+            }
+
             for (Rect face : facesArray) {
                 Imgproc.rectangle(loadedImage, face.tl(), face.br(), new Scalar(0, 0, 255), 3);
 
