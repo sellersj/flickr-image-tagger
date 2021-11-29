@@ -9,6 +9,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TrainingUtil {
 
+    // TODO Redesign:
+    // This should be changed so that it has a list of "tags of interest".
+    // it should query flickr for all the images that have these tags
+    // it can either download them, or look for them in a cache dir.
+    // for images that have ONLY ONE tag of interest, it should be considered a training image
+    // if it has 1 face in it, we could guess that it matches the tag
+    // We might have to have some other tag that says "do not use this image" or something
+
     // TODO remove this later
     private static String FLICKR_CACHE_DIR = System.getProperty("user.home") + "/Downloads/flickr_frame/";
 
