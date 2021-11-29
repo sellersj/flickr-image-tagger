@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TrainingUtil {
 
     // TODO remove this later
-    private static String FLICKR_CACHE_DIR = "/Users/sellersj/Downloads/flickr_frame/";
+    private static String FLICKR_CACHE_DIR = System.getProperty("user.home") + "/Downloads/flickr_frame/";
 
     public List<FlickrTrainingEntry> getTrainingEnteries() {
 
