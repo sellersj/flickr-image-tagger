@@ -15,7 +15,6 @@ public class HelloCVTest {
 
     @BeforeEach
     public void loadTraining() {
-        helloCV.initKnownPeople();
         helloCV.train();
     }
 
