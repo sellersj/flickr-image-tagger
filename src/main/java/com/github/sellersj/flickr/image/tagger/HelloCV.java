@@ -4,9 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.opencv.opencv_java;
@@ -29,51 +26,27 @@ public class HelloCV {
         Loader.load(opencv_java.class);
     }
 
-    private static Map<Integer, List<String>> KNOWN_PEOPLE = null;
-
     private final EigenFaceRecognizer faceRecognizer = EigenFaceRecognizer.create();
     // private final FisherFaceRecognizer faceRecognizer = FisherFaceRecognizer.create();
-
-    public void initKnownPeople() {
-        KNOWN_PEOPLE = new TreeMap<>();
-        String flickrCacheDir = "/Users/sellersj/Downloads/flickr_frame/";
-
-        KNOWN_PEOPLE.put(0, // "laura"
-            Arrays.asList(//
-                flickrCacheDir + "vert/89816602.jpg", //
-                flickrCacheDir + "vert/332317382.jpg", //
-                flickrCacheDir + "vert/397135131.jpg", //
-                flickrCacheDir + "vert/639320620.jpg", //
-                // flickrCacheDir + "vert/639320620.jpg", //
-                // flickrCacheDir + "vert/2304638646.jpg", //
-                flickrCacheDir + "vert/2304671662.jpg"));
-
-        KNOWN_PEOPLE.put(1, // "jim",
-            Arrays.asList(//
-                flickrCacheDir + "vert/743749434.jpg", //
-                flickrCacheDir + "vert/2302719514.jpg", //
-                flickrCacheDir + "vert/2481226701.jpg", //
-                flickrCacheDir + "vert/2671955983.jpg", //
-                // flickrCacheDir + "vert/639305244.jpg", //
-                // flickrCacheDir + "vert/3109722534.jpg", //
-                flickrCacheDir + "vert/2982279905.jpg"));
-    }
 
     public void train() {
         long t1 = System.currentTimeMillis();
 
+        TrainingUtil trainingUtil = new TrainingUtil();
+        List<FlickrTrainingEntry> trainingEnteries = trainingUtil.getTrainingEnteries();
+
         // figure out total number of images we're doing
         int imageCount = 0;
-        for (List<String> values : KNOWN_PEOPLE.values()) {
-            imageCount += values.size();
+        for (FlickrTrainingEntry entry : trainingEnteries) {
+            imageCount += entry.getCachedPhotoPath().size();
         }
 
         int[] labels = new int[imageCount];
         List<Mat> list = new ArrayList<Mat>(imageCount);
 
         int counter = 0;
-        for (Entry<Integer, List<String>> entry : KNOWN_PEOPLE.entrySet()) {
-            for (String filename : entry.getValue()) {
+        for (FlickrTrainingEntry entry : trainingEnteries) {
+            for (String filename : entry.getCachedPhotoPath()) {
 
                 // try to create a training image here
                 Mat trainingImage = createTrainingImage(new File(filename));
@@ -85,7 +58,9 @@ public class HelloCV {
                     Imgproc.cvtColor(trainingImage, grayImg, Imgproc.COLOR_BGR2GRAY);
                     list.add(grayImg);
 
-                    labels[counter] = entry.getKey();
+                    // TODO do we need to match from one run to the next the id of the internal
+                    // array against the flickr tag?
+                    labels[counter] = counter;
 
                     counter++;
                 }
@@ -123,6 +98,7 @@ public class HelloCV {
         Rect[] facesArray = facesDetected.toArray();
         if (0 != facesArray.length) {
 
+            // TODO fix this so that we only do it if it's not already part of the training set
             // try to identify the photos with only 1 found face
             if (1 == facesArray.length) {
                 System.out.println("Only 1 face found for " + targetImagePath);
@@ -183,7 +159,8 @@ public class HelloCV {
         // save the image
         Rect[] facesArray = facesDetected.toArray();
         if (1 != facesArray.length) {
-            throw new IllegalArgumentException("We need to detect one and only 1 face in " + toTrain.getAbsolutePath());
+            throw new IllegalArgumentException("We need to detect one and only 1 face in " + toTrain.getAbsolutePath()
+                + " but we found " + facesArray.length);
         } else {
             for (Rect face : facesArray) {
                 // Mat detection = loadedImage.clone();
