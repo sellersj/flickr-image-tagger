@@ -1,9 +1,12 @@
 package com.github.sellersj.flickr.image.tagger;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.opencv.opencv_java;
@@ -19,6 +22,8 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.objdetect.Objdetect;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class HelloCV {
 
@@ -37,9 +42,25 @@ public class HelloCV {
 
     public void train() {
         // TODO make a decision here about retraining vs loading the data
-        if (RETRAIN)
-            retrain();
-        else {
+        if (RETRAIN) {
+            List<FlickrTrainingEntry> enteries = retrain();
+
+            // make a map of the tag names and the label
+            Map<String, Integer> mapping = new TreeMap<>();
+            for (FlickrTrainingEntry entry : enteries) {
+                mapping.put(entry.getTagName(), entry.getOpencvLabelId());
+            }
+
+            // TODO this should be changed quite a bit... maybe a db ?
+            // write the file
+            ObjectMapper objectMapper = new ObjectMapper();
+            String fileLocation = System.getProperty("user.home") + "/Downloads/flickr-existing-training-mapping.json";
+            try {
+                objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(fileLocation), mapping);
+            } catch (IOException e) {
+                throw new RuntimeException("Couldn't write " + fileLocation, e);
+            }
+        } else {
             loadExistingModel();
         }
     }
@@ -50,12 +71,14 @@ public class HelloCV {
         String cachedModel = System.getProperty("user.home") + "/Downloads/flickr-existing-training.yaml";
         System.out.println("Loading the already trained model from " + cachedModel);
         faceRecognizer.read(cachedModel);
+        
+        // TODO read in the id mapping file
 
         long t2 = System.currentTimeMillis();
         System.out.println("Done loading existing model. It took " + (t2 - t1) + " milliseconds");
     }
 
-    public void retrain() {
+    public List<FlickrTrainingEntry> retrain() {
         long t1 = System.currentTimeMillis();
 
         TrainingUtil trainingUtil = new TrainingUtil();
@@ -87,6 +110,7 @@ public class HelloCV {
                     // TODO do we need to match from one run to the next the id of the internal
                     // array against the flickr tag?
                     labels[counter] = counter;
+                    entry.setOpencvLabelId(counter);
 
                     counter++;
                 }
@@ -107,6 +131,8 @@ public class HelloCV {
 
         long t2 = System.currentTimeMillis();
         System.out.println("Done training. It took " + (t2 - t1) + " milliseconds");
+
+        return trainingEnteries;
     }
 
     public void processImage(String filename) {

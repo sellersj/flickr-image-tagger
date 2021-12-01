@@ -17,6 +17,9 @@ public class FlickrTrainingEntry {
     /** Path to photos that we have cached for training. */
     private List<String> cachedPhotoPath = new ArrayList<>();
 
+    /** This will need to be saved somewhere so we can match the face with the label. */
+    private int opencvLabelId;
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
@@ -72,6 +75,22 @@ public class FlickrTrainingEntry {
      */
     public void setCachedPhotoPath(List<String> cachedPhotoPath) {
         this.cachedPhotoPath = cachedPhotoPath;
+    }
+
+    
+    /**
+     * @return the opencvLabelId
+     */
+    public int getOpencvLabelId() {
+        return opencvLabelId;
+    }
+
+    
+    /**
+     * @param opencvLabelId the opencvLabelId to set
+     */
+    public void setOpencvLabelId(int opencvLabelId) {
+        this.opencvLabelId = opencvLabelId;
     }
 
 }
