@@ -71,7 +71,7 @@ public class HelloCV {
         String cachedModel = System.getProperty("user.home") + "/Downloads/flickr-existing-training.yaml";
         System.out.println("Loading the already trained model from " + cachedModel);
         faceRecognizer.read(cachedModel);
-        
+
         // TODO read in the id mapping file
 
         long t2 = System.currentTimeMillis();
@@ -111,10 +111,12 @@ public class HelloCV {
                     // array against the flickr tag?
                     labels[counter] = counter;
                     entry.setOpencvLabelId(counter);
-
-                    counter++;
                 }
             }
+
+            // only increment the counter for the person, not the photo we are looking at
+            counter++;
+
             // triggering the gc so we don't use tons of memory
             System.gc();
         }
