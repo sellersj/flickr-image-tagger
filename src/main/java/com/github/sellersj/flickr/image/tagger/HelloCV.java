@@ -102,10 +102,8 @@ public class HelloCV {
                 // TODO does this make sense to return null? Now we have gaps in the array?
                 if (null != trainingImage) {
 
-                    // Mat img = loadImage(filename);
-                    Mat grayImg = new Mat();
-                    Imgproc.cvtColor(trainingImage, grayImg, Imgproc.COLOR_BGR2GRAY);
-                    list.add(grayImg);
+                    // training image is already grayscale
+                    list.add(trainingImage);
 
                     // TODO do we need to match from one run to the next the id of the internal
                     // array against the flickr tag?
@@ -250,7 +248,7 @@ public class HelloCV {
                 Mat gray = new Mat();
                 Imgproc.cvtColor(image_roi, gray, Imgproc.COLOR_BGR2GRAY);
                 Mat detection = new Mat();
-                Imgproc.resize(image_roi, detection, new Size(300, 300), 0.0, 0.0, Imgproc.INTER_LANCZOS4);
+                Imgproc.resize(gray, detection, new Size(300, 300), 0.0, 0.0, Imgproc.INTER_LANCZOS4);
 
                 saveImage(detection, "target/training-day/" + toTrain.getName());
 
