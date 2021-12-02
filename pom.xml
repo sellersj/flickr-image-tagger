@@ -13,50 +13,29 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>software.amazon.awssdk</groupId>
-        <artifactId>bom</artifactId>
-        <version>2.17.67</version>
-        <type>pom</type>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>2.13.0</version>
         <scope>import</scope>
+        <type>pom</type>
       </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
     <dependency>
-      <groupId>software.amazon.awssdk</groupId>
-      <artifactId>rekognition</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
-
-
-    <!-- for doing face recognition locally -->
-    <!-- this allows a total java impl, but is missing extra modules and is behind on the versions -->
-    <!-- https://github.com/openpnp/opencv/issues/57 -->
-    <!-- <dependency> -->
-    <!-- <groupId>org.openpnp</groupId> -->
-    <!-- <artifactId>opencv</artifactId> -->
-    <!-- <version>4.3.0-3</version> -->
-    <!-- </dependency> -->
-    <!-- this requires a native install like with `brew install opencv` -->
-    <!-- <dependency> -->
-    <!-- <groupId>org.bytedeco</groupId> -->
-    <!-- <artifactId>opencv</artifactId> -->
-    <!-- <version>4.4.0-1.5.4</version> -->
-    <!-- </dependency> -->
-
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.12.0</version>
+    </dependency>
     <dependency>
       <groupId>org.bytedeco</groupId>
       <artifactId>javacv-platform</artifactId>
       <version>1.5.4</version>
     </dependency>
-
-    <!-- trying this out from https://github.com/tzolov/mtcnn-java/ -->
-    <dependency>
-      <groupId>net.tzolov.cv</groupId>
-      <artifactId>mtcnn</artifactId>
-      <version>0.0.4</version>
-    </dependency>
-
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -71,16 +50,6 @@
     </dependency>
   </dependencies>
 
-  <repositories>
-    <repository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>bintray-big-data-maven</id>
-      <name>bintray</name>
-      <url>https://jcenter.bintray.com/</url>
-    </repository>
-  </repositories>
 
   <build>
     <plugins>
